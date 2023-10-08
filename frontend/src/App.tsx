@@ -11,7 +11,7 @@ import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
 import { Provider } from "react-redux";
 import store from "./store/store";
 
-import { Layout } from "./HOCs/Layout";
+import Layout from "./HOCs/Layout";
 
 const App = () => {
 	return (

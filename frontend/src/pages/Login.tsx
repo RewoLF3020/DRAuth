@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../actions/auth";
-
-interface ILogin {
-	email: string;
-	password: string;
-}
+import { RootState } from "../utils/interfaces";
+import { ILogin } from "../utils/interfaces";
 
 interface IProps {
-	login: (email: string, password: string) => Promise<void>
+	login: (email: string, password: string) => Promise<void>;
+	isAuthenticated: boolean | null;
 }
 
-const Login: React.FC<IProps> = ({ login }) => {
+const Login: React.FC<IProps> = ({ login, isAuthenticated }) => {
 	const [formData, setFormData] = useState<ILogin>({
 		email: '',
 		password: '',
@@ -20,12 +18,16 @@ const Login: React.FC<IProps> = ({ login }) => {
 
 	const { email, password } = formData;
 
-	const onChange = (e: any) => setFormData({...formData, [e.target.name]: e.target.value});
+	const onChange = (e: ChangeEvent<HTMLInputElement>) => setFormData({...formData, [e.target.name]: e.target.value});
 
-	const onSubmit = (e: any) => {
+	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		login(email, password);
+	}
+
+	if (isAuthenticated) {
+		return <Navigate to='/' />
 	}
 
     return (
@@ -68,8 +70,8 @@ const Login: React.FC<IProps> = ({ login }) => {
     );
 }
 
-// const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
+	isAuthenticated: state.auth.isAuthenticated
+})
 
-// })
-
-export default connect(null, { login })(Login);
+export default connect(mapStateToProps, { login })(Login);
