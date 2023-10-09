@@ -6,7 +6,7 @@ import { RootState } from "../utils/interfaces";
 import { ILogin } from "../utils/interfaces";
 
 interface IProps {
-	login: (email: string, password: string) => Promise<void>;
+	login: (data: ILogin) => Promise<void>;
 	isAuthenticated: boolean | null;
 }
 
@@ -23,7 +23,7 @@ const Login: React.FC<IProps> = ({ login, isAuthenticated }) => {
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		login(email, password);
+		login({email, password});
 	}
 
 	if (isAuthenticated) {
@@ -49,7 +49,7 @@ const Login: React.FC<IProps> = ({ login, isAuthenticated }) => {
 				<div className="form-group mt-3">
 					<input
 						className="form-control"
-						type="passworf"
+						type="password"
 						placeholder="Password"
 						name="password"
 						value={password}

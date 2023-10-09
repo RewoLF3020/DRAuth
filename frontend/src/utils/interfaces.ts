@@ -18,3 +18,10 @@ export interface ILogin {
 	email: string;
 	password: string;
 }
+
+export interface IResetPasswordConfirm {
+    uid: string | undefined;
+    token: string | undefined;
+    new_password: string;
+    re_new_password: string;
+}
