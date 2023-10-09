@@ -10,9 +10,13 @@ import {
     PASSWORD_RESET_FAIL,
     PASSWORD_RESET_CONFIRM_SUCCESS,
     PASSWORD_RESET_CONFIRM_FAIL,
+    SIGNUP_SUCCESS,
+    SIGNUP_FAIL,
+    ACTIVATION_SUCCESS,
+    ACTIVATION_FAIL,
     LOGOUT
 } from "./types";
-import { ILogin, IResetPasswordConfirm } from "../utils/interfaces";
+import { ILogin, IResetPasswordConfirm, ISignUp, IVerify } from "../utils/interfaces";
 
 export const checkAuthenticated = () => async (dispatch: any) => {
     if (localStorage.getItem('access')) {
@@ -101,6 +105,53 @@ export const login = ({email, password}: ILogin) => async (dispatch: any) => {
     } catch (error: any) {
         dispatch({
             type: LOGIN_FAIL,
+        });
+    }
+}
+
+export const signup = ({name, email, password, re_password}: ISignUp) => async (dispatch: any) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({name, email, password, re_password});
+
+    try {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config);
+
+        dispatch({
+            type: SIGNUP_SUCCESS,
+            payload: response.data
+        });
+
+    } catch (error: any) {
+        dispatch({
+            type: SIGNUP_FAIL,
+        });
+    }
+}
+
+export const verify = ({uid, token}: IVerify) => async (dispatch: any) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({uid, token});
+
+    try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/auth/users/activation/`, body, config);
+
+        dispatch({
+            type: ACTIVATION_SUCCESS,
+        });
+
+    } catch (error: any) {
+        dispatch({
+            type: ACTIVATION_FAIL,
         });
     }
 }

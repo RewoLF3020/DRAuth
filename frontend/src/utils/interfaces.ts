@@ -25,3 +25,15 @@ export interface IResetPasswordConfirm {
     new_password: string;
     re_new_password: string;
 }
+
+export interface ISignUp {
+    name: string;
+    email: string;
+    password: string;
+    re_password: string;
+}
+
+export interface IVerify {
+    uid: string | undefined;
+    token: string | undefined;
+}

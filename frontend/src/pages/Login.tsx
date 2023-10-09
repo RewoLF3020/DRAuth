@@ -2,8 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../actions/auth";
-import { RootState } from "../utils/interfaces";
-import { ILogin } from "../utils/interfaces";
+import { RootState, ILogin } from "../utils/interfaces";
 
 interface IProps {
 	login: (data: ILogin) => Promise<void>;
