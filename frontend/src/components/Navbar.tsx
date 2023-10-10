@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import { RootState } from "../utils/interfaces";
@@ -10,6 +10,13 @@ interface INavbar {
 }
 
 const Navbar: React.FC<INavbar> = ({ logout, isAuthenticated }) => {
+    // const [redirect, setRedirect] = useState<boolean>(false);
+
+    // const logoutUser = () => {
+    //     logout();
+    //     setRedirect(true);
+    // }
+
     const guestLinks = () => {
         return (
             <Fragment>
@@ -36,32 +43,35 @@ const Navbar: React.FC<INavbar> = ({ logout, isAuthenticated }) => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <Link className="navbar-brand" to="/">
-                DRAuth
-            </Link>
-            <button
-                className="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-                <ul className="navbar-nav">
-                    <li className="nav-item active">
-                        <Link className="nav-link" to="/">
-                            Home <span className="sr-only">(current)</span>
-                        </Link>
-                    </li>
-                    {isAuthenticated ? authLinks() : guestLinks()}
-                </ul>
-            </div>
-        </nav>
+        <Fragment>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <Link className="navbar-brand" to="/">
+                    DRAuth
+                </Link>
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNav">
+                    <ul className="navbar-nav">
+                        <li className="nav-item active">
+                            <Link className="nav-link" to="/">
+                                Home <span className="sr-only">(current)</span>
+                            </Link>
+                        </li>
+                        {isAuthenticated ? authLinks() : guestLinks()}
+                    </ul>
+                </div>
+            </nav>
+            {/* {redirect ? <Navigate to="/" /> : <Fragment></Fragment>} */}
+        </Fragment>
     );
 };
 

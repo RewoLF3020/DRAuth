@@ -10,6 +10,7 @@ const middleware = [thunk];
 const store = configureStore({
     reducer: rootReducer,
     preloadedState: initialState,
+    devTools: process.env.NODE_ENV !== 'production',
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(...middleware),
     enhancers: [composeWithDevTools as typeof compose],
 });

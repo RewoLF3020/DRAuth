@@ -27,7 +27,8 @@ export interface IResetPasswordConfirm {
 }
 
 export interface ISignUp {
-    name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     password: string;
     re_password: string;
@@ -36,4 +37,9 @@ export interface ISignUp {
 export interface IVerify {
     uid: string | undefined;
     token: string | undefined;
+}
+
+export interface IGoogleAuth {
+    state: any;
+    code: any;
 }

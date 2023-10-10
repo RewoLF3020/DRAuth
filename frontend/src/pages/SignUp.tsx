@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { signup } from "../actions/auth";
 import { ISignUp, RootState } from "../utils/interfaces";
+import axios from "axios";
 
 interface IProps {
 	signup: (data: ISignUp) => Promise<void>;
@@ -12,13 +13,14 @@ interface IProps {
 const SignUp: React.FC<IProps> = ({ signup, isAuthenticated }) => {
 	const [accountCreated, setAccountCreated] = useState<boolean>(false);
 	const [formData, setFormData] = useState<ISignUp>({
-		name: '',
+		first_name: '',
+		last_name: '',
 		email: '',
 		password: '',
 		re_password: ''
 	});
 
-	const { name, email, password, re_password } = formData;
+	const { first_name, last_name, email, password, re_password } = formData;
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => setFormData({...formData, [e.target.name]: e.target.value});
 
@@ -26,8 +28,18 @@ const SignUp: React.FC<IProps> = ({ signup, isAuthenticated }) => {
 		e.preventDefault();
 
 		if (password === re_password) {
-			signup({name, email, password, re_password});
+			signup({first_name, last_name, email, password, re_password});
 			setAccountCreated(true);
+		}
+	}
+
+	const continueWithGoogle = async () => {
+		try {
+			const response = await axios.get(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?redirect_uri=http://localhost:8000`)
+
+			window.location.replace(response.data.authorization_url);
+		} catch (error:any) {
+			
 		}
 	}
 
@@ -48,9 +60,20 @@ const SignUp: React.FC<IProps> = ({ signup, isAuthenticated }) => {
 					<input
 						className="form-control"
 						type="text"
-						placeholder="Name*"
-						name="name"
-						value={name}
+						placeholder="First name*"
+						name="first_name"
+						value={first_name}
+						onChange={e => onChange(e)}
+						required
+					/>
+				</div>
+				<div className="form-group mt-3">
+					<input
+						className="form-control"
+						type="text"
+						placeholder="Last name*"
+						name="last_name"
+						value={last_name}
 						onChange={e => onChange(e)}
 						required
 					/>
@@ -92,6 +115,9 @@ const SignUp: React.FC<IProps> = ({ signup, isAuthenticated }) => {
 				</div>
 				<button className="btn btn-primary mt-3" type="submit">Register</button>
 			</form>
+			<button className="btn btn-danger mt-3" onClick={continueWithGoogle}>
+				Continue with Google
+			</button>
 			<p className="mt-3">
 				Already have an account? <Link to="/login" style={{ textDecoration: 'none' }}>Sign in</Link>
 			</p>

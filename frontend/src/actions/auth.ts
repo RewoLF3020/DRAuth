@@ -14,9 +14,11 @@ import {
     SIGNUP_FAIL,
     ACTIVATION_SUCCESS,
     ACTIVATION_FAIL,
+    GOOGLE_AUTH_SUCCESS,
+    GOOGLE_AUTH_FAIL,
     LOGOUT
 } from "./types";
-import { ILogin, IResetPasswordConfirm, ISignUp, IVerify } from "../utils/interfaces";
+import { IGoogleAuth, ILogin, IResetPasswordConfirm, ISignUp, IVerify } from "../utils/interfaces";
 
 export const checkAuthenticated = () => async (dispatch: any) => {
     if (localStorage.getItem('access')) {
@@ -83,6 +85,37 @@ export const loadUser = () => async (dispatch: any) => {
     }
 }
 
+export const googleAuth = ({state, code}: IGoogleAuth) => async (dispatch: any) => {
+    if (state && code && !localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        };
+
+        const details: {[key in keyof IGoogleAuth]: string} = {
+            'state': state,
+            'code': code
+        }
+
+        const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key as keyof IGoogleAuth])).join('&');
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?${formBody}`, config);
+
+            dispatch({
+                type: GOOGLE_AUTH_SUCCESS,
+                payload: response.data
+            });
+
+            dispatch(loadUser());
+        } catch (error: any) {
+            dispatch({
+                type: GOOGLE_AUTH_FAIL
+            });
+        }
+    }
+}
 
 export const login = ({email, password}: ILogin) => async (dispatch: any) => {
     const config = {
@@ -109,14 +142,14 @@ export const login = ({email, password}: ILogin) => async (dispatch: any) => {
     }
 }
 
-export const signup = ({name, email, password, re_password}: ISignUp) => async (dispatch: any) => {
+export const signup = ({first_name, last_name, email, password, re_password}: ISignUp) => async (dispatch: any) => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
 
-    const body = JSON.stringify({name, email, password, re_password});
+    const body = JSON.stringify({first_name, last_name, email, password, re_password});
 
     try {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config);
